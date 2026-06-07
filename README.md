@@ -51,6 +51,9 @@ cd Screentide
 
 # 2. Install the widget package locally
 kpackagetool6 --type Plasma/Applet --install .
+
+# To upgrade an already installed version:
+kpackagetool6 --type Plasma/Applet --upgrade .
 ```
 
 ### Method 2: Manual Installation (Alternative)
