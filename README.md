@@ -64,7 +64,7 @@ kpackagetool6 --type Plasma/Applet --install .
 kpackagetool6 --type Plasma/Applet --upgrade .
 ```
 
-### Method 2: Manual Installation (Alternative)
+### Method 3: Manual Installation (Alternative)
 
 If you prefer to copy the files manually into your local user widgets directory:
 
@@ -117,23 +117,6 @@ plasmashell --replace & disown
 
 ---
 
-## 📦 Packaging & Publishing to the KDE Store
-
-If you want to package and upload Screentide to the [KDE Store](https://store.kde.org/) so anyone can search and install it via the widget explorer:
-
-1. **Package the widget**:
-   Compress the repository files into a `.plasmoid` file (which is a standard ZIP archive containing the metadata and contents at the root):
-   ```bash
-   zip -r screentide.plasmoid contents metadata.json LICENSE README.md icon.png
-   ```
-2. **Upload to the Store**:
-   * Register or log in to [store.kde.org](https://store.kde.org/).
-   * Click **Add Product** and choose the category **Plasma Addons** -> **Plasma 6 Extension Widgets**.
-   * Provide the title (**Screentide**), description, and links.
-   * Under the **Files** section, upload the `screentide.plasmoid` package file.
-   * Once uploaded, it will automatically register and show up in KDE's graphical "Get New Widgets" dialog!
-
----
 
 ## 📄 License
 
