@@ -40,7 +40,15 @@ Before installing the widget, you need **ActivityWatch** running on your local m
 
 ## 🛠️ Installation & Setup
 
-### Method 1: Cloned Installation (Recommended)
+### Method 1: Graphical Installer (KDE Store / Discover)
+
+Once published on the KDE Store, users can install it instantly without the command line:
+1. Right-click your desktop wallpaper and select **Add Widgets...**
+2. Click **Get New Widgets** -> **Download New Plasma Widgets**.
+3. Search for **"Screentide"**.
+4. Click **Install**, then drag it onto your panel or desktop.
+
+### Method 2: Cloned Installation (CLI)
 
 Since the repository is structured as a direct package, you can clone and register it using the native KDE Plasma package manager:
 
@@ -106,6 +114,24 @@ rm -rf ~/.cache/qmlcache/* && kbuildsycoca6
 # 3. Restart the Plasma shell to load updates
 plasmashell --replace & disown
 ```
+
+---
+
+## 📦 Packaging & Publishing to the KDE Store
+
+If you want to package and upload Screentide to the [KDE Store](https://store.kde.org/) so anyone can search and install it via the widget explorer:
+
+1. **Package the widget**:
+   Compress the repository files into a `.plasmoid` file (which is a standard ZIP archive containing the metadata and contents at the root):
+   ```bash
+   zip -r screentide.plasmoid contents metadata.json LICENSE README.md icon.png
+   ```
+2. **Upload to the Store**:
+   * Register or log in to [store.kde.org](https://store.kde.org/).
+   * Click **Add Product** and choose the category **Plasma Addons** -> **Plasma 6 Extension Widgets**.
+   * Provide the title (**Screentide**), description, and links.
+   * Under the **Files** section, upload the `screentide.plasmoid` package file.
+   * Once uploaded, it will automatically register and show up in KDE's graphical "Get New Widgets" dialog!
 
 ---
 
