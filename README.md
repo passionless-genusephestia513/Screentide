@@ -30,9 +30,8 @@ Screentide lets you visualize your daily computer usage total, hourly activity c
 Before installing the widget, you need **ActivityWatch** running on your local machine:
 
 1.  **Install ActivityWatch**:
-    *   **Arch Linux**: `yay -S activitywatch-bin`
-    *   **Fedora**: `sudo dnf install activitywatch`
-    *   **Debian/Ubuntu**: Download the `.deb` package or tarball from the [ActivityWatch Releases page](https://github.com/ActivityWatch/activitywatch/releases).
+    *   Please refer to the [Official ActivityWatch Website](https://activitywatch.net/) for platform-specific installation instructions.
+    *   *Quick tip:* On Arch Linux, run `yay -S activitywatch-bin`; on Fedora, run `sudo dnf install activitywatch`. For Debian/Ubuntu, download the package from the [ActivityWatch Releases page](https://github.com/ActivityWatch/activitywatch/releases).
 2.  **Start ActivityWatch**:
     *   Run `aw-qt` or start it as a background system service.
     *   Verify it is running by visiting the local dashboard at: [http://localhost:5600](http://localhost:5600).
