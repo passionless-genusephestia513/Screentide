@@ -31,6 +31,91 @@ PlasmoidItem {
     readonly property color resolvedBarColorHoverStart: plasmoid.configuration.useSystemTheme ? Qt.lighter(Kirigami.Theme.highlightColor, 1.15) : plasmoid.configuration.chartBarColorHoverStart
     readonly property color resolvedBarColorHoverEnd: plasmoid.configuration.useSolidColor ? resolvedBarColorHoverStart : (plasmoid.configuration.useSystemTheme ? Qt.lighter(Kirigami.Theme.highlightColor, 1.35) : plasmoid.configuration.chartBarColorHoverEnd)
     
+    // Define icon mappings once to avoid recreating the array on every call
+    readonly property var iconMappings: [
+        // Browsers
+        { keys: ["chrome"], icon: "google-chrome" },
+        { keys: ["brave"], icon: "brave-browser" },
+        { keys: ["firefox"], icon: "firefox" },
+        { keys: ["edge", "msedge"], icon: "microsoft-edge" },
+        { keys: ["opera"], icon: "opera" },
+        { keys: ["vivaldi"], icon: "vivaldi" },
+        { keys: ["tor"], icon: "tor-browser" },
+        { keys: ["safari"], icon: "safari" },
+        { keys: ["chromium"], icon: "chromium" },
+        
+        // IDE / Development
+        { keys: ["code", "vscode"], icon: "visual-studio-code" },
+        { keys: ["cursor"], icon: "cursor" },
+        { keys: ["intellij", "idea"], icon: "intellij-idea" },
+        { keys: ["webstorm"], icon: "webstorm" },
+        { keys: ["pycharm"], icon: "pycharm" },
+        { keys: ["clion"], icon: "clion" },
+        { keys: ["android", "studio"], icon: "android-studio" },
+        { keys: ["sublime", "subl"], icon: "sublime-text" },
+        { keys: ["emacs"], icon: "emacs" },
+        { keys: ["neovim", "nvim"], icon: "nvim" },
+        { keys: ["vim"], icon: "vim" },
+        { keys: ["gitkraken"], icon: "gitkraken" },
+        { keys: ["github"], icon: "github" },
+        
+        // Terminals
+        { keys: ["kitty"], icon: "kitty" },
+        { keys: ["alacritty"], icon: "alacritty" },
+        { keys: ["konsole"], icon: "konsole" },
+        { keys: ["wezterm"], icon: "wezterm" },
+        { keys: ["terminal", "term", "bash", "zsh"], icon: "utilities-terminal" },
+        
+        // Communication
+        { keys: ["slack"], icon: "slack" },
+        { keys: ["discord"], icon: "discord" },
+        { keys: ["telegram"], icon: "telegram" },
+        { keys: ["whatsapp"], icon: "whatsapp" },
+        { keys: ["teams"], icon: "teams" },
+        { keys: ["signal"], icon: "signal" },
+        { keys: ["zoom"], icon: "zoom" },
+        { keys: ["skype"], icon: "skype" },
+        
+        // Email
+        { keys: ["thunderbird"], icon: "thunderbird" },
+        { keys: ["evolution"], icon: "evolution" },
+        { keys: ["kmail"], icon: "kmail" },
+        
+        // Office & Productivity
+        { keys: ["writer"], icon: "libreoffice-writer" },
+        { keys: ["calc"], icon: "libreoffice-calc" },
+        { keys: ["impress"], icon: "libreoffice-impress" },
+        { keys: ["notion"], icon: "notion" },
+        { keys: ["obsidian"], icon: "obsidian" },
+        { keys: ["evernote"], icon: "evernote" },
+        { keys: ["todoist"], icon: "todoist" },
+        
+        // Creative & Media
+        { keys: ["blender"], icon: "blender" },
+        { keys: ["gimp"], icon: "gimp" },
+        { keys: ["inkscape"], icon: "inkscape" },
+        { keys: ["krita"], icon: "krita" },
+        { keys: ["photoshop"], icon: "photoshop" },
+        { keys: ["illustrator"], icon: "illustrator" },
+        { keys: ["figma"], icon: "figma" },
+        { keys: ["spotify"], icon: "spotify" },
+        { keys: ["vlc"], icon: "vlc" },
+        { keys: ["mpv"], icon: "mpv" },
+        { keys: ["steam"], icon: "steam" },
+        { keys: ["lutris"], icon: "lutris" },
+        { keys: ["heroic"], icon: "heroic" },
+        
+        // System / Utilities
+        { keys: ["dolphin", "finder"], icon: "system-file-manager" },
+        { keys: ["settings", "preferences", "control-center"], icon: "preferences-system" },
+        { keys: ["discover"], icon: "plasmadiscover" },
+        { keys: ["systemmonitor", "htop", "monitor"], icon: "utilities-system-monitor" },
+        { keys: ["krunner"], icon: "krunner" },
+        { keys: ["spectacle", "screenshot"], icon: "spectacle" }
+    ]
+    
+    property var iconExactCache: ({})
+    
     onDayOffsetChanged: {
         updateDateLabel();
         fetchData();
@@ -92,7 +177,17 @@ PlasmoidItem {
         onTriggered: fetchData()
     }
     
-    Component.onCompleted: fetchData()
+    Component.onCompleted: {
+        var cache = {};
+        for (var i = 0; i < iconMappings.length; i++) {
+            var entry = iconMappings[i];
+            for (var j = 0; j < entry.keys.length; j++) {
+                cache[entry.keys[j]] = entry.icon;
+            }
+        }
+        iconExactCache = cache;
+        fetchData();
+    }
     
     function formatDuration(seconds) {
         var hrs = Math.floor(seconds / 3600);
@@ -119,85 +214,20 @@ PlasmoidItem {
     function mapIcon(appName) {
         appName = appName.toLowerCase()
         
-        // Browsers
-        if (appName.indexOf("chrome") !== -1) return "google-chrome"
-        if (appName.indexOf("brave") !== -1) return "brave-browser"
-        if (appName.indexOf("firefox") !== -1) return "firefox"
-        if (appName.indexOf("edge") !== -1 || appName.indexOf("msedge") !== -1) return "microsoft-edge"
-        if (appName.indexOf("opera") !== -1) return "opera"
-        if (appName.indexOf("vivaldi") !== -1) return "vivaldi"
-        if (appName.indexOf("tor") !== -1) return "tor-browser"
-        if (appName.indexOf("safari") !== -1) return "safari"
-        if (appName.indexOf("chromium") !== -1) return "chromium"
+        // 1. Exact match lookup cache
+        if (iconExactCache[appName] !== undefined) {
+            return iconExactCache[appName];
+        }
         
-        // IDE / Development
-        if (appName.indexOf("code") !== -1 || appName.indexOf("vscode") !== -1) return "visual-studio-code"
-        if (appName.indexOf("cursor") !== -1) return "cursor"
-        if (appName.indexOf("intellij") !== -1 || appName.indexOf("idea") !== -1) return "intellij-idea"
-        if (appName.indexOf("webstorm") !== -1) return "webstorm"
-        if (appName.indexOf("pycharm") !== -1) return "pycharm"
-        if (appName.indexOf("clion") !== -1) return "clion"
-        if (appName.indexOf("android") !== -1 || appName.indexOf("studio") !== -1) return "android-studio"
-        if (appName.indexOf("sublime") !== -1 || appName.indexOf("subl") !== -1) return "sublime-text"
-        if (appName.indexOf("emacs") !== -1) return "emacs"
-        if (appName.indexOf("neovim") !== -1 || appName.indexOf("nvim") !== -1) return "nvim"
-        if (appName.indexOf("vim") !== -1) return "vim"
-        if (appName.indexOf("gitkraken") !== -1) return "gitkraken"
-        if (appName.indexOf("github") !== -1) return "github"
-        
-        // Terminals
-        if (appName.indexOf("kitty") !== -1) return "kitty"
-        if (appName.indexOf("alacritty") !== -1) return "alacritty"
-        if (appName.indexOf("konsole") !== -1) return "konsole"
-        if (appName.indexOf("wezterm") !== -1) return "wezterm"
-        if (appName.indexOf("terminal") !== -1 || appName.indexOf("term") !== -1 || appName.indexOf("bash") !== -1 || appName.indexOf("zsh") !== -1) return "utilities-terminal"
-        
-        // Communication
-        if (appName.indexOf("slack") !== -1) return "slack"
-        if (appName.indexOf("discord") !== -1) return "discord"
-        if (appName.indexOf("telegram") !== -1) return "telegram"
-        if (appName.indexOf("whatsapp") !== -1) return "whatsapp"
-        if (appName.indexOf("teams") !== -1) return "teams"
-        if (appName.indexOf("signal") !== -1) return "signal"
-        if (appName.indexOf("zoom") !== -1) return "zoom"
-        if (appName.indexOf("skype") !== -1) return "skype"
-        
-        // Email
-        if (appName.indexOf("thunderbird") !== -1) return "thunderbird"
-        if (appName.indexOf("evolution") !== -1) return "evolution"
-        if (appName.indexOf("kmail") !== -1) return "kmail"
-        
-        // Office & Productivity
-        if (appName.indexOf("writer") !== -1) return "libreoffice-writer"
-        if (appName.indexOf("calc") !== -1) return "libreoffice-calc"
-        if (appName.indexOf("impress") !== -1) return "libreoffice-impress"
-        if (appName.indexOf("notion") !== -1) return "notion"
-        if (appName.indexOf("obsidian") !== -1) return "obsidian"
-        if (appName.indexOf("evernote") !== -1) return "evernote"
-        if (appName.indexOf("todoist") !== -1) return "todoist"
-        
-        // Creative & Media
-        if (appName.indexOf("blender") !== -1) return "blender"
-        if (appName.indexOf("gimp") !== -1) return "gimp"
-        if (appName.indexOf("inkscape") !== -1) return "inkscape"
-        if (appName.indexOf("krita") !== -1) return "krita"
-        if (appName.indexOf("photoshop") !== -1) return "photoshop"
-        if (appName.indexOf("illustrator") !== -1) return "illustrator"
-        if (appName.indexOf("figma") !== -1) return "figma"
-        if (appName.indexOf("spotify") !== -1) return "spotify"
-        if (appName.indexOf("vlc") !== -1) return "vlc"
-        if (appName.indexOf("mpv") !== -1) return "mpv"
-        if (appName.indexOf("steam") !== -1) return "steam"
-        if (appName.indexOf("lutris") !== -1) return "lutris"
-        if (appName.indexOf("heroic") !== -1) return "heroic"
-        
-        // System / Utilities
-        if (appName.indexOf("dolphin") !== -1 || appName.indexOf("finder") !== -1) return "system-file-manager"
-        if (appName.indexOf("settings") !== -1 || appName.indexOf("preferences") !== -1 || appName.indexOf("control-center") !== -1) return "preferences-system"
-        if (appName.indexOf("discover") !== -1) return "plasmadiscover"
-        if (appName.indexOf("systemmonitor") !== -1 || appName.indexOf("htop") !== -1 || appName.indexOf("monitor") !== -1) return "utilities-system-monitor"
-        if (appName.indexOf("krunner") !== -1) return "krunner"
-        if (appName.indexOf("spectacle") !== -1 || appName.indexOf("screenshot") !== -1) return "spectacle"
+        // 2. Fallback to substring checking
+        for (var i = 0; i < iconMappings.length; i++) {
+            var entry = iconMappings[i];
+            for (var j = 0; j < entry.keys.length; j++) {
+                if (appName.indexOf(entry.keys[j]) !== -1) {
+                    return entry.icon;
+                }
+            }
+        }
         
         // Extract icon from desktop app namespace (e.g. org.kde.kcalc -> kcalc)
         if (appName.indexOf(".") !== -1) {
@@ -380,6 +410,359 @@ PlasmoidItem {
         xhr.send(JSON.stringify(payload))
     }
     
+    // --- Reusable Sub-Components ---
+    
+    Component {
+        id: appItemDelegate
+        Item {
+            id: delegateRoot
+            width: ListView.view ? ListView.view.width : (parent ? parent.width : 0)
+            height: 44
+            
+            Layout.fillWidth: true
+            Layout.preferredHeight: 44
+            
+            Rectangle {
+                anchors.fill: parent
+                color: itemHover.containsMouse ? "#2C2C2E" : "transparent"
+                radius: 8
+                Behavior on color { ColorAnimation { duration: 100 } }
+                
+                MouseArea {
+                    id: itemHover
+                    anchors.fill: parent
+                    hoverEnabled: true
+                }
+            }
+            
+            RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 8
+                anchors.rightMargin: 8
+                spacing: 10
+                
+                Kirigami.Icon {
+                    source: model.iconName
+                    Layout.preferredWidth: 24
+                    Layout.preferredHeight: 24
+                    Layout.alignment: Qt.AlignVCenter
+                }
+                
+                ColumnLayout {
+                    spacing: 4
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignVCenter
+                    
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Text {
+                            text: model.name
+                            color: "white"
+                            font.family: root.customFontFamily
+                            font.pixelSize: Math.max(9, 13 + plasmoid.configuration.fontSizeModifier)
+                            font.weight: Font.DemiBold
+                            elide: Text.ElideRight
+                            Layout.fillWidth: true
+                        }
+                        Text {
+                            text: plasmoid.configuration.showPercentages ? (model.durationStr + " (" + model.percentageStr + ")") : model.durationStr
+                            color: "#98989D"
+                            font.family: root.customFontFamily
+                            font.pixelSize: Math.max(8, 11 + plasmoid.configuration.fontSizeModifier)
+                            font.weight: Font.Medium
+                        }
+                    }
+                    
+                    // Progress bar showing relative share
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 3
+                        color: "#2C2C2E"
+                        radius: 1.5
+                        
+                        Rectangle {
+                            width: (root.maxAppDuration > 0 && model.rawDuration !== undefined) ? (model.rawDuration / root.maxAppDuration) * parent.width : 0
+                            height: parent.height
+                            radius: 1.5
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: root.resolvedBarColorStart }
+                                GradientStop { position: 1.0; color: root.resolvedBarColorEnd }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: navControlsComponent
+        RowLayout {
+            spacing: 8
+            
+            // Nav Buttons
+            Rectangle {
+                Layout.preferredHeight: 32
+                Layout.preferredWidth: navRow.implicitWidth + 24
+                radius: 16
+                color: "#2C2C2E"
+                
+                RowLayout {
+                    id: navRow
+                    anchors.centerIn: parent
+                    spacing: 12
+                    
+                    // Left Arrow Character
+                    Text {
+                        text: "‹"
+                        color: mouseAreaLeftArrow.containsMouse ? plasmoid.configuration.chartBarColorStart : "white"
+                        font.family: root.customFontFamily
+                        font.pixelSize: Math.max(10, 20 + plasmoid.configuration.fontSizeModifier)
+                        font.weight: Font.Bold
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                        Layout.preferredWidth: 16
+                        Layout.preferredHeight: 16
+                        
+                        Behavior on color { ColorAnimation { duration: 100 } }
+                        
+                        MouseArea {
+                            id: mouseAreaLeftArrow
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.dayOffset--
+                            anchors.margins: -8
+                        }
+                    }
+                    
+                    Text {
+                        text: root.dateLabel
+                        color: "#98989D"
+                        font.family: root.customFontFamily
+                        font.pixelSize: Math.max(9, 13 + plasmoid.configuration.fontSizeModifier)
+                        font.weight: Font.DemiBold
+                    }
+                    
+                    // Right Arrow Character
+                    Text {
+                        text: "›"
+                        color: root.dayOffset < 0 ? (mouseAreaRightArrow.containsMouse ? plasmoid.configuration.chartBarColorStart : "white") : "#555555"
+                        font.family: root.customFontFamily
+                        font.pixelSize: Math.max(10, 20 + plasmoid.configuration.fontSizeModifier)
+                        font.weight: Font.Bold
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                        Layout.preferredWidth: 16
+                        Layout.preferredHeight: 16
+                        
+                        Behavior on color { ColorAnimation { duration: 100 } }
+                        
+                        MouseArea {
+                            id: mouseAreaRightArrow
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            enabled: root.dayOffset < 0
+                            cursorShape: root.dayOffset < 0 ? Qt.PointingHandCursor : Qt.ArrowCursor
+                            onClicked: root.dayOffset++
+                            anchors.margins: -8
+                        }
+                    }
+                }
+            }
+            
+            // Refresh Button
+            Rectangle {
+                Layout.preferredHeight: 32
+                Layout.preferredWidth: 32
+                radius: 16
+                color: mouseAreaRefresh.containsMouse ? "#3A3A3C" : "#2C2C2E"
+                Behavior on color { ColorAnimation { duration: 100 } }
+                
+                Kirigami.Icon {
+                    source: "view-refresh"
+                    anchors.centerIn: parent
+                    width: 16
+                    height: 16
+                    color: "white"
+                    isMask: true
+                }
+                
+                MouseArea {
+                    id: mouseAreaRefresh
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        root.dataCache = {};
+                        root.fetchData();
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: chartComponent
+        Item {
+            id: chartRoot
+            width: parent ? parent.width : 0
+            height: parent ? parent.height : 0
+            
+            property real graphWidth: width - 40
+            property real graphHeight: height - 20
+            
+            // Y-axis lines
+            Repeater {
+                model: 3
+                Item {
+                    width: chartRoot.width
+                    height: 1
+                    y: index * (chartRoot.graphHeight / 2)
+                    
+                    Rectangle {
+                        width: chartRoot.graphWidth
+                        height: 1
+                        color: "#2C2C2E" // Soft grid color
+                    }
+                    
+                    Text {
+                        text: index === 0 ? formatDuration(root.maxHourlyTime) : (index === 1 ? formatDuration(root.maxHourlyTime / 2) : "0")
+                        color: "#8E8E93"
+                        font.family: root.customFontFamily
+                        font.pixelSize: Math.max(8, 10 + plasmoid.configuration.fontSizeModifier)
+                        font.weight: Font.DemiBold
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.top
+                    }
+                }
+            }
+            
+            // X-axis dashes
+            Repeater {
+                model: 4
+                Item {
+                    property int hourIndex: index * 6
+                    x: (hourIndex / 24) * chartRoot.graphWidth
+                    y: 0
+                    width: 1
+                    height: chartRoot.graphHeight
+                    
+                    Column {
+                        spacing: 4
+                        Repeater {
+                            model: chartRoot.graphHeight / 6
+                            Rectangle { width: 1; height: 2; color: "#2C2C2E" }
+                        }
+                    }
+                    
+                    Text {
+                        text: {
+                            var hr = (index * 6 + plasmoid.configuration.startHour) % 24;
+                            return formatHourHelper(hr);
+                        }
+                        color: "#8E8E93"
+                        font.family: root.customFontFamily
+                        font.pixelSize: Math.max(8, 10 + plasmoid.configuration.fontSizeModifier)
+                        font.weight: Font.DemiBold
+                        anchors.top: parent.top
+                        anchors.topMargin: chartRoot.graphHeight + 6
+                        anchors.left: parent.left
+                        anchors.leftMargin: 2
+                    }
+                }
+            }
+            
+            // Bars & Hover
+            Repeater {
+                model: root.hourlyData.length
+                Item {
+                    x: (index / root.hourlyData.length) * chartRoot.graphWidth
+                    y: 0
+                    width: chartRoot.graphWidth / root.hourlyData.length
+                    height: chartRoot.graphHeight
+                    
+                    Rectangle {
+                        id: visualBar
+                        property real val: root.hourlyData[index] + (root.triggerUpdate * 0)
+                        property real barHeight: val > 0 ? Math.max(2, (val / root.maxHourlyTime) * chartRoot.graphHeight) : 0
+                        
+                        anchors.bottom: parent.bottom
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: Math.max(1, Math.min(plasmoid.configuration.barWidth, parent.width - 2))
+                        height: barHeight
+                        radius: plasmoid.configuration.barRadius
+                        
+                        // Configurable gradient colors
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: mouseArea.containsMouse ? root.resolvedBarColorHoverStart : root.resolvedBarColorStart }
+                            GradientStop { position: 1.0; color: mouseArea.containsMouse ? root.resolvedBarColorHoverEnd : root.resolvedBarColorEnd }
+                        }
+                        
+                        Behavior on height {
+                            NumberAnimation { duration: 500; easing.type: Easing.OutQuint }
+                        }
+                    }
+                    
+                    MouseArea {
+                        id: mouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onContainsMouseChanged: {
+                            if (containsMouse) {
+                                tooltipBubble.hoveredIndex = index;
+                            } else if (tooltipBubble.hoveredIndex === index) {
+                                tooltipBubble.hoveredIndex = -1;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Declarative Tooltip Bubble
+            Rectangle {
+                id: tooltipBubble
+                property int hoveredIndex: -1
+                visible: hoveredIndex !== -1
+                color: "#2C2C2E"
+                border.color: "#48484A"
+                border.width: 1
+                radius: 6
+                width: Math.max(80, tooltipText.implicitWidth + 16)
+                height: tooltipText.implicitHeight + 10
+                z: 100
+                
+                x: {
+                    if (hoveredIndex === -1) return 0;
+                    var colX = (hoveredIndex / 24) * chartRoot.graphWidth;
+                    var colWidth = chartRoot.graphWidth / 24;
+                    var targetX = colX + (colWidth - width) / 2;
+                    return Math.max(0, Math.min(chartRoot.graphWidth - width, targetX));
+                }
+                
+                y: {
+                    if (hoveredIndex === -1) return 0;
+                    var val = root.hourlyData[hoveredIndex];
+                    var barHeight = val > 0 ? Math.max(2, (val / root.maxHourlyTime) * chartRoot.graphHeight) : 0;
+                    var barTop = chartRoot.graphHeight - barHeight;
+                    return Math.max(0, barTop - height - 6);
+                }
+                
+                Text {
+                    id: tooltipText
+                    text: tooltipBubble.hoveredIndex !== -1 ? (getHourLabel(tooltipBubble.hoveredIndex) + "\n" + formatDuration(root.hourlyData[tooltipBubble.hoveredIndex])) : ""
+                    color: "white"
+                    font.family: root.customFontFamily
+                    font.pixelSize: Math.max(8, 11 + plasmoid.configuration.fontSizeModifier)
+                    font.weight: Font.Medium
+                    horizontalAlignment: Text.AlignHCenter
+                    anchors.centerIn: parent
+                }
+            }
+        }
+    }
+    
     compactRepresentation: MouseArea {
         id: compactRoot
         
@@ -523,265 +906,17 @@ PlasmoidItem {
                 
                 Item { Layout.fillWidth: true }
                 
-                // Nav Buttons
-                Rectangle {
-                    Layout.preferredHeight: 32
-                    Layout.preferredWidth: navRow.implicitWidth + 24
-                    radius: 16
-                    color: "#2C2C2E"
-                    
-                    RowLayout {
-                        id: navRow
-                        anchors.centerIn: parent
-                        spacing: 12
-                        
-                        // Left Arrow Character
-                        Text {
-                            text: "‹"
-                            color: mouseAreaLeftArrow.containsMouse ? plasmoid.configuration.chartBarColorStart : "white"
-                            font.family: root.customFontFamily
-                            font.pixelSize: Math.max(10, 20 + plasmoid.configuration.fontSizeModifier)
-                            font.weight: Font.Bold
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                            Layout.preferredWidth: 16
-                            Layout.preferredHeight: 16
-                            
-                            Behavior on color { ColorAnimation { duration: 100 } }
-                            
-                            MouseArea {
-                                id: mouseAreaLeftArrow
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: root.dayOffset--
-                                anchors.margins: -8
-                            }
-                        }
-                        
-                        Text {
-                            text: root.dateLabel
-                            color: "#98989D"
-                            font.family: root.customFontFamily
-                            font.pixelSize: Math.max(9, 13 + plasmoid.configuration.fontSizeModifier)
-                            font.weight: Font.DemiBold
-                        }
-                        
-                        // Right Arrow Character
-                        Text {
-                            text: "›"
-                            color: root.dayOffset < 0 ? (mouseAreaRightArrow.containsMouse ? plasmoid.configuration.chartBarColorStart : "white") : "#555555"
-                            font.family: root.customFontFamily
-                            font.pixelSize: Math.max(10, 20 + plasmoid.configuration.fontSizeModifier)
-                            font.weight: Font.Bold
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                            Layout.preferredWidth: 16
-                            Layout.preferredHeight: 16
-                            
-                            Behavior on color { ColorAnimation { duration: 100 } }
-                            
-                            MouseArea {
-                                id: mouseAreaRightArrow
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                enabled: root.dayOffset < 0
-                                cursorShape: root.dayOffset < 0 ? Qt.PointingHandCursor : Qt.ArrowCursor
-                                onClicked: root.dayOffset++
-                                anchors.margins: -8
-                            }
-                        }
-                    }
-                }
-                
-                // Refresh Button
-                Rectangle {
-                    id: refreshBtnPortrait
-                    Layout.preferredHeight: 32
-                    Layout.preferredWidth: 32
-                    radius: 16
-                    color: mouseAreaRefreshPortrait.containsMouse ? "#3A3A3C" : "#2C2C2E"
-                    Behavior on color { ColorAnimation { duration: 100 } }
-                    
-                    Kirigami.Icon {
-                        source: "view-refresh"
-                        anchors.centerIn: parent
-                        width: 16
-                        height: 16
-                        color: "white"
-                        isMask: true
-                    }
-                    
-                    MouseArea {
-                        id: mouseAreaRefreshPortrait
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            root.dataCache = {};
-                            root.fetchData();
-                        }
-                    }
+                Loader {
+                    sourceComponent: navControlsComponent
                 }
             }
             
             // Chart Area (Scales dynamically based on parent height)
-            Item {
-                id: chartAreaPortrait
+            Loader {
                 Layout.fillWidth: true
                 Layout.preferredHeight: Math.max(80, Math.min(220, portraitLayout.height * 0.35))
                 Layout.fillHeight: true
-                
-                property real graphWidth: width - 40
-                property real graphHeight: height - 20
-                
-                // Y-axis lines
-                Repeater {
-                    model: 3
-                    Item {
-                        width: chartAreaPortrait.width
-                        height: 1
-                        y: index * (chartAreaPortrait.graphHeight / 2)
-                        
-                        Rectangle {
-                            width: chartAreaPortrait.graphWidth
-                            height: 1
-                            color: "#2C2C2E" // Soft grid color
-                        }
-                        
-                        Text {
-                            text: index === 0 ? formatDuration(root.maxHourlyTime) : (index === 1 ? formatDuration(root.maxHourlyTime / 2) : "0")
-                            color: "#8E8E93"
-                            font.family: root.customFontFamily
-                            font.pixelSize: Math.max(8, 10 + plasmoid.configuration.fontSizeModifier)
-                            font.weight: Font.DemiBold
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.top
-                        }
-                    }
-                }
-                
-                // X-axis dashes
-                Repeater {
-                    model: 4
-                    Item {
-                        property int hourIndex: index * 6
-                        x: (hourIndex / 24) * chartAreaPortrait.graphWidth
-                        y: 0
-                        width: 1
-                        height: chartAreaPortrait.graphHeight
-                        
-                        Column {
-                            spacing: 4
-                            Repeater {
-                                model: chartAreaPortrait.graphHeight / 6
-                                Rectangle { width: 1; height: 2; color: "#2C2C2E" }
-                            }
-                        }
-                        
-                        Text {
-                            text: {
-                                var hr = (index * 6 + plasmoid.configuration.startHour) % 24;
-                                return formatHourHelper(hr);
-                            }
-                            color: "#8E8E93"
-                            font.family: root.customFontFamily
-                            font.pixelSize: Math.max(8, 10 + plasmoid.configuration.fontSizeModifier)
-                            font.weight: Font.DemiBold
-                            anchors.top: parent.top
-                            anchors.topMargin: chartAreaPortrait.graphHeight + 6
-                            anchors.left: parent.left
-                            anchors.leftMargin: 2
-                        }
-                    }
-                }
-                
-                // Bars & Hover
-                Repeater {
-                    model: root.hourlyData.length
-                    Item {
-                        x: (index / root.hourlyData.length) * chartAreaPortrait.graphWidth
-                        y: 0
-                        width: chartAreaPortrait.graphWidth / root.hourlyData.length
-                        height: chartAreaPortrait.graphHeight
-                        
-                        Rectangle {
-                            id: visualBarPortrait
-                            property real val: root.hourlyData[index] + (root.triggerUpdate * 0)
-                            property real barHeight: val > 0 ? Math.max(2, (val / root.maxHourlyTime) * chartAreaPortrait.graphHeight) : 0
-                            
-                            anchors.bottom: parent.bottom
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            width: Math.max(1, Math.min(plasmoid.configuration.barWidth, parent.width - 2))
-                            height: barHeight
-                            radius: plasmoid.configuration.barRadius
-                            
-                            // Configurable gradient colors
-                            gradient: Gradient {
-                                GradientStop { position: 0.0; color: mouseAreaPortrait.containsMouse ? root.resolvedBarColorHoverStart : root.resolvedBarColorStart }
-                                GradientStop { position: 1.0; color: mouseAreaPortrait.containsMouse ? root.resolvedBarColorHoverEnd : root.resolvedBarColorEnd }
-                            }
-                            
-                            Behavior on height {
-                                NumberAnimation { duration: 500; easing.type: Easing.OutQuint }
-                            }
-                        }
-                        
-                        MouseArea {
-                            id: mouseAreaPortrait
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onContainsMouseChanged: {
-                                if (containsMouse) {
-                                    tooltipBubblePortrait.hoveredIndex = index;
-                                } else if (tooltipBubblePortrait.hoveredIndex === index) {
-                                    tooltipBubblePortrait.hoveredIndex = -1;
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                // Declarative Tooltip Bubble
-                Rectangle {
-                    id: tooltipBubblePortrait
-                    property int hoveredIndex: -1
-                    visible: hoveredIndex !== -1
-                    color: "#2C2C2E"
-                    border.color: "#48484A"
-                    border.width: 1
-                    radius: 6
-                    width: Math.max(80, tooltipTextPortrait.implicitWidth + 16)
-                    height: tooltipTextPortrait.implicitHeight + 10
-                    z: 100
-                    
-                    x: {
-                        if (hoveredIndex === -1) return 0;
-                        var colX = (hoveredIndex / 24) * chartAreaPortrait.graphWidth;
-                        var colWidth = chartAreaPortrait.graphWidth / 24;
-                        var targetX = colX + (colWidth - width) / 2;
-                        return Math.max(0, Math.min(chartAreaPortrait.graphWidth - width, targetX));
-                    }
-                    
-                    y: {
-                        if (hoveredIndex === -1) return 0;
-                        var val = root.hourlyData[hoveredIndex];
-                        var barHeight = val > 0 ? Math.max(2, (val / root.maxHourlyTime) * chartAreaPortrait.graphHeight) : 0;
-                        var barTop = chartAreaPortrait.graphHeight - barHeight;
-                        return Math.max(0, barTop - height - 6);
-                    }
-                    
-                    Text {
-                        id: tooltipTextPortrait
-                        text: tooltipBubblePortrait.hoveredIndex !== -1 ? (getHourLabel(tooltipBubblePortrait.hoveredIndex) + "\n" + formatDuration(root.hourlyData[tooltipBubblePortrait.hoveredIndex])) : ""
-                        color: "white"
-                        font.family: root.customFontFamily
-                        font.pixelSize: Math.max(8, 11 + plasmoid.configuration.fontSizeModifier)
-                        font.weight: Font.Medium
-                        horizontalAlignment: Text.AlignHCenter
-                        anchors.centerIn: parent
-                    }
-                }
+                sourceComponent: chartComponent
             }
             
             Item { Layout.preferredHeight: 16 }
@@ -796,82 +931,7 @@ PlasmoidItem {
                 
                 Repeater {
                     model: appsModel
-                    Item {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 44
-                        
-                        Rectangle {
-                            anchors.fill: parent
-                            color: itemHover.containsMouse ? "#2C2C2E" : "transparent"
-                            radius: 8
-                            Behavior on color { ColorAnimation { duration: 100 } }
-                            
-                            MouseArea {
-                                id: itemHover
-                                anchors.fill: parent
-                                hoverEnabled: true
-                            }
-                        }
-                        
-                        RowLayout {
-                            anchors.fill: parent
-                            anchors.leftMargin: 8
-                            anchors.rightMargin: 8
-                            spacing: 10
-                            
-                            Kirigami.Icon {
-                                source: model.iconName
-                                Layout.preferredWidth: 24
-                                Layout.preferredHeight: 24
-                                Layout.alignment: Qt.AlignVCenter
-                            }
-                            
-                            ColumnLayout {
-                                spacing: 4
-                                Layout.fillWidth: true
-                                Layout.alignment: Qt.AlignVCenter
-                                
-                                RowLayout {
-                                    Layout.fillWidth: true
-                                    Text {
-                                        text: model.name
-                                        color: "white"
-                                        font.family: root.customFontFamily
-                                        font.pixelSize: Math.max(9, 13 + plasmoid.configuration.fontSizeModifier)
-                                        font.weight: Font.DemiBold
-                                        elide: Text.ElideRight
-                                        Layout.fillWidth: true
-                                    }
-                                    Text {
-                                        text: plasmoid.configuration.showPercentages ? (model.durationStr + " (" + model.percentageStr + ")") : model.durationStr
-                                        color: "#98989D"
-                                        font.family: root.customFontFamily
-                                        font.pixelSize: Math.max(8, 11 + plasmoid.configuration.fontSizeModifier)
-                                        font.weight: Font.Medium
-                                    }
-                                }
-                                
-                                // Progress bar showing relative share
-                                Rectangle {
-                                    Layout.fillWidth: true
-                                    Layout.preferredHeight: 3
-                                    color: "#2C2C2E"
-                                    radius: 1.5
-                                    
-                                    Rectangle {
-                                        width: (root.maxAppDuration > 0 && model.rawDuration !== undefined) ? (model.rawDuration / root.maxAppDuration) * parent.width : 0
-                                        height: parent.height
-                                        radius: 1.5
-                                        gradient: Gradient {
-                                            orientation: Gradient.Horizontal
-                                            GradientStop { position: 0.0; color: root.resolvedBarColorStart }
-                                            GradientStop { position: 1.0; color: root.resolvedBarColorEnd }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    delegate: appItemDelegate
                 }
             }
         }
@@ -905,263 +965,16 @@ PlasmoidItem {
                     
                     Item { Layout.fillWidth: true }
                     
-                    // Nav Buttons
-                    Rectangle {
-                        Layout.preferredHeight: 32
-                        Layout.preferredWidth: navRowLandscape.implicitWidth + 24
-                        radius: 16
-                        color: "#2C2C2E"
-                        
-                        RowLayout {
-                            id: navRowLandscape
-                            anchors.centerIn: parent
-                            spacing: 12
-                            
-                            // Left Arrow Character
-                            Text {
-                                text: "‹"
-                                color: mouseAreaLeftArrowLandscape.containsMouse ? plasmoid.configuration.chartBarColorStart : "white"
-                                font.family: root.customFontFamily
-                                font.pixelSize: Math.max(10, 20 + plasmoid.configuration.fontSizeModifier)
-                                font.weight: Font.Bold
-                                verticalAlignment: Text.AlignVCenter
-                                horizontalAlignment: Text.AlignHCenter
-                                Layout.preferredWidth: 16
-                                Layout.preferredHeight: 16
-                                
-                                Behavior on color { ColorAnimation { duration: 100 } }
-                                
-                                MouseArea {
-                                    id: mouseAreaLeftArrowLandscape
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.dayOffset--
-                                    anchors.margins: -8
-                                }
-                            }
-                            
-                            Text {
-                                text: root.dateLabel
-                                color: "#98989D"
-                                font.family: root.customFontFamily
-                                font.pixelSize: Math.max(9, 13 + plasmoid.configuration.fontSizeModifier)
-                                font.weight: Font.DemiBold
-                            }
-                            
-                            // Right Arrow Character
-                            Text {
-                                text: "›"
-                                color: root.dayOffset < 0 ? (mouseAreaRightArrowLandscape.containsMouse ? plasmoid.configuration.chartBarColorStart : "white") : "#555555"
-                                font.family: root.customFontFamily
-                                font.pixelSize: Math.max(10, 20 + plasmoid.configuration.fontSizeModifier)
-                                font.weight: Font.Bold
-                                verticalAlignment: Text.AlignVCenter
-                                horizontalAlignment: Text.AlignHCenter
-                                Layout.preferredWidth: 16
-                                Layout.preferredHeight: 16
-                                
-                                Behavior on color { ColorAnimation { duration: 100 } }
-                                
-                                MouseArea {
-                                    id: mouseAreaRightArrowLandscape
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    enabled: root.dayOffset < 0
-                                    cursorShape: root.dayOffset < 0 ? Qt.PointingHandCursor : Qt.ArrowCursor
-                                    onClicked: root.dayOffset++
-                                    anchors.margins: -8
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Refresh Button
-                    Rectangle {
-                        id: refreshBtnLandscape
-                        Layout.preferredHeight: 32
-                        Layout.preferredWidth: 32
-                        radius: 16
-                        color: mouseAreaRefreshLandscape.containsMouse ? "#3A3A3C" : "#2C2C2E"
-                        Behavior on color { ColorAnimation { duration: 100 } }
-                        
-                        Kirigami.Icon {
-                            source: "view-refresh"
-                            anchors.centerIn: parent
-                            width: 16
-                            height: 16
-                            color: "white"
-                            isMask: true
-                        }
-                        
-                        MouseArea {
-                            id: mouseAreaRefreshLandscape
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                root.dataCache = {};
-                                root.fetchData();
-                            }
-                        }
+                    Loader {
+                        sourceComponent: navControlsComponent
                     }
                 }
                 
                 // Chart Area
-                Item {
-                    id: chartAreaLandscape
+                Loader {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    
-                    property real graphWidth: width - 40
-                    property real graphHeight: height - 20
-                    
-                    // Y-axis lines
-                    Repeater {
-                        model: 3
-                        Item {
-                            width: chartAreaLandscape.width
-                            height: 1
-                            y: index * (chartAreaLandscape.graphHeight / 2)
-                            
-                            Rectangle {
-                                width: chartAreaLandscape.graphWidth
-                                height: 1
-                                color: "#2C2C2E"
-                            }
-                            
-                            Text {
-                                text: index === 0 ? formatDuration(root.maxHourlyTime) : (index === 1 ? formatDuration(root.maxHourlyTime / 2) : "0")
-                                color: "#8E8E93"
-                                font.family: root.customFontFamily
-                                font.pixelSize: Math.max(8, 10 + plasmoid.configuration.fontSizeModifier)
-                                font.weight: Font.DemiBold
-                                anchors.right: parent.right
-                                anchors.verticalCenter: parent.top
-                            }
-                        }
-                    }
-                    
-                    // X-axis lines
-                    Repeater {
-                        model: 4
-                        Item {
-                            property int hourIndex: index * 6
-                            x: (hourIndex / 24) * chartAreaLandscape.graphWidth
-                            y: 0
-                            width: 1
-                            height: chartAreaLandscape.graphHeight
-                            
-                            Column {
-                                spacing: 4
-                                Repeater {
-                                    model: chartAreaLandscape.graphHeight / 6
-                                    Rectangle { width: 1; height: 2; color: "#2C2C2E" }
-                                }
-                            }
-                            
-                            Text {
-                                text: {
-                                    var hr = (index * 6 + plasmoid.configuration.startHour) % 24;
-                                    return formatHourHelper(hr);
-                                }
-                                color: "#8E8E93"
-                                font.family: root.customFontFamily
-                                font.pixelSize: Math.max(8, 10 + plasmoid.configuration.fontSizeModifier)
-                                font.weight: Font.DemiBold
-                                anchors.top: parent.top
-                                anchors.topMargin: chartAreaLandscape.graphHeight + 6
-                                anchors.left: parent.left
-                                anchors.leftMargin: 2
-                            }
-                        }
-                    }
-                    
-                    // Bars & Hover
-                    Repeater {
-                        model: root.hourlyData.length
-                        Item {
-                            x: (index / root.hourlyData.length) * chartAreaLandscape.graphWidth
-                            y: 0
-                            width: chartAreaLandscape.graphWidth / root.hourlyData.length
-                            height: chartAreaLandscape.graphHeight
-                            
-                            Rectangle {
-                                id: visualBarLandscape
-                                property real val: root.hourlyData[index] + (root.triggerUpdate * 0)
-                                property real barHeight: val > 0 ? Math.max(2, (val / root.maxHourlyTime) * chartAreaLandscape.graphHeight) : 0
-                                
-                                anchors.bottom: parent.bottom
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                width: Math.max(1, Math.min(plasmoid.configuration.barWidth, parent.width - 2))
-                                height: barHeight
-                                radius: plasmoid.configuration.barRadius
-                                
-                                gradient: Gradient {
-                                    GradientStop { position: 0.0; color: mouseAreaLandscape.containsMouse ? root.resolvedBarColorHoverStart : root.resolvedBarColorStart }
-                                    GradientStop { position: 1.0; color: mouseAreaLandscape.containsMouse ? root.resolvedBarColorHoverEnd : root.resolvedBarColorEnd }
-                                }
-                                
-                                Behavior on height {
-                                    NumberAnimation { duration: 500; easing.type: Easing.OutQuint }
-                                }
-                            }
-                            
-                            MouseArea {
-                                id: mouseAreaLandscape
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                onContainsMouseChanged: {
-                                    if (containsMouse) {
-                                        tooltipBubbleLandscape.hoveredIndex = index;
-                                    } else if (tooltipBubbleLandscape.hoveredIndex === index) {
-                                        tooltipBubbleLandscape.hoveredIndex = -1;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Declarative Tooltip Bubble
-                    Rectangle {
-                        id: tooltipBubbleLandscape
-                        property int hoveredIndex: -1
-                        visible: hoveredIndex !== -1
-                        color: "#2C2C2E"
-                        border.color: "#48484A"
-                        border.width: 1
-                        radius: 6
-                        width: Math.max(80, tooltipTextLandscape.implicitWidth + 16)
-                        height: tooltipTextLandscape.implicitHeight + 10
-                        z: 100
-                        
-                        x: {
-                            if (hoveredIndex === -1) return 0;
-                            var colX = (hoveredIndex / 24) * chartAreaLandscape.graphWidth;
-                            var colWidth = chartAreaLandscape.graphWidth / 24;
-                            var targetX = colX + (colWidth - width) / 2;
-                            return Math.max(0, Math.min(chartAreaLandscape.graphWidth - width, targetX));
-                        }
-                        
-                        y: {
-                            if (hoveredIndex === -1) return 0;
-                            var val = root.hourlyData[hoveredIndex];
-                            var barHeight = val > 0 ? Math.max(2, (val / root.maxHourlyTime) * chartAreaLandscape.graphHeight) : 0;
-                            var barTop = chartAreaLandscape.graphHeight - barHeight;
-                            return Math.max(0, barTop - height - 6);
-                        }
-                        
-                        Text {
-                            id: tooltipTextLandscape
-                            text: tooltipBubbleLandscape.hoveredIndex !== -1 ? (getHourLabel(tooltipBubbleLandscape.hoveredIndex) + "\n" + formatDuration(root.hourlyData[tooltipBubbleLandscape.hoveredIndex])) : ""
-                            color: "white"
-                            font.family: root.customFontFamily
-                            font.pixelSize: Math.max(8, 11 + plasmoid.configuration.fontSizeModifier)
-                            font.weight: Font.Medium
-                            horizontalAlignment: Text.AlignHCenter
-                            anchors.centerIn: parent
-                        }
-                    }
+                    sourceComponent: chartComponent
                 }
             }
             
@@ -1186,82 +999,7 @@ PlasmoidItem {
                     clip: true
                     model: appsModel
                     spacing: 8
-                    delegate: Item {
-                        width: ListView.view.width
-                        height: 44
-                        
-                        Rectangle {
-                            anchors.fill: parent
-                            color: itemHoverLandscape.containsMouse ? "#2C2C2E" : "transparent"
-                            radius: 8
-                            Behavior on color { ColorAnimation { duration: 100 } }
-                            
-                            MouseArea {
-                                id: itemHoverLandscape
-                                anchors.fill: parent
-                                hoverEnabled: true
-                            }
-                        }
-                        
-                        RowLayout {
-                            anchors.fill: parent
-                            anchors.leftMargin: 8
-                            anchors.rightMargin: 8
-                            spacing: 10
-                            
-                            Kirigami.Icon {
-                                source: model.iconName
-                                Layout.preferredWidth: 24
-                                Layout.preferredHeight: 24
-                                Layout.alignment: Qt.AlignVCenter
-                            }
-                            
-                            ColumnLayout {
-                                spacing: 4
-                                Layout.fillWidth: true
-                                Layout.alignment: Qt.AlignVCenter
-                                
-                                RowLayout {
-                                    Layout.fillWidth: true
-                                    Text {
-                                        text: model.name
-                                        color: "white"
-                                        font.family: root.customFontFamily
-                                        font.pixelSize: Math.max(9, 13 + plasmoid.configuration.fontSizeModifier)
-                                        font.weight: Font.DemiBold
-                                        elide: Text.ElideRight
-                                        Layout.fillWidth: true
-                                    }
-                                    Text {
-                                        text: plasmoid.configuration.showPercentages ? (model.durationStr + " (" + model.percentageStr + ")") : model.durationStr
-                                        color: "#98989D"
-                                        font.family: root.customFontFamily
-                                        font.pixelSize: Math.max(8, 11 + plasmoid.configuration.fontSizeModifier)
-                                        font.weight: Font.Medium
-                                    }
-                                }
-                                
-                                // Progress bar showing relative share
-                                Rectangle {
-                                    Layout.fillWidth: true
-                                    Layout.preferredHeight: 3
-                                    color: "#2C2C2E"
-                                    radius: 1.5
-                                    
-                                    Rectangle {
-                                        width: (root.maxAppDuration > 0 && model.rawDuration !== undefined) ? (model.rawDuration / root.maxAppDuration) * parent.width : 0
-                                        height: parent.height
-                                        radius: 1.5
-                                        gradient: Gradient {
-                                            orientation: Gradient.Horizontal
-                                            GradientStop { position: 0.0; color: root.resolvedBarColorStart }
-                                            GradientStop { position: 1.0; color: root.resolvedBarColorEnd }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    delegate: appItemDelegate
                 }
             }
         }
