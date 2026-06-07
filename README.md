@@ -53,7 +53,7 @@ You need **ActivityWatch** running locally on your computer:
 ## Installation
 
 ### Method 1: Get New Widgets (Easiest)
-Once published to the store, you can install it directly through KDE:
+You can find it on the [KDE Store page](https://store.kde.org/p/2361910/) or install it directly through KDE:
 1. Right-click your desktop and choose **Add Widgets...**
 2. Click **Get New Widgets** -> **Download New Plasma Widgets**.
 3. Search for **Screentide** and click **Install**.
